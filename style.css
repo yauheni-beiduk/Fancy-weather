@@ -10,7 +10,8 @@ body {
   width: 100%;
   padding: 0px;
   margin: 0px;
-  background-color: darkmagenta;
+  background-image: url('https://images.wallpaperscraft.ru/image/ozero_gory_derevia_129959_1280x720.jpg');
+  background-size: cover;
 }
 
 .wrapper {
@@ -173,7 +174,7 @@ main {
 }
 
 .date_now {
-  width: 30%;
+  width: 40%;
 }
 
 .tempreture_now {
@@ -246,6 +247,8 @@ main {
   width: 30vw;
   height: 30vw;
   background-color: white;
+  border: none;
+  outline: none;
 }
 
 .koordinats {

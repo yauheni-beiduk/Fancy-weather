@@ -25,20 +25,16 @@ const firstTemperature = document.getElementById('firstTemperature');
 const secondTemperature = document.getElementById('secondTemperature');
 const thirdTemperature = document.getElementById('thirdTemperature');
 
-
-
-
-
-
-
 function getAdress(posLatitude, posLongitude) {
-  return fetch(`https://api.opencagedata.com/geocode/v1/json?q=${posLatitude}+${posLongitude}&key=8466357058924cb6ab7663a46faa152a&language=en&pretty=1`)
-      .then((response) => response.json());
+  return fetch(
+    `https://api.opencagedata.com/geocode/v1/json?q=${posLatitude}+${posLongitude}&key=8466357058924cb6ab7663a46faa152a&language=en&pretty=1`
+  ).then((response) => response.json());
 }
-async function showAdress(posLatitude,posLongitude) {
-  let adress = await getAdress(posLatitude,posLongitude);
+async function showAdress(posLatitude, posLongitude) {
+  let adress = await getAdress(posLatitude, posLongitude);
   const city = adress.results[0].components.city;
-  locationCity.textContent = `${city}, ${adress.results[0].components.country}`;
+  const country = adress.results[0].components.country;
+  locationCity.textContent = `${city}, ${country}`;
   console.log(adress);
   showWeatherNow(city);
 }
@@ -46,58 +42,31 @@ async function showAdress(posLatitude,posLongitude) {
 
 
 function searchSity(city) {
-  return fetch(`https://api.opencagedata.com/geocode/v1/json?q=${city}&key=8466357058924cb6ab7663a46faa152a&language=en&pretty=1`)
-      .then((response) => response.json());
-  }
-  async function showSearchCity(city) {
-    city = inputCity.value;
-    let adress = await searchSity(city);
-    showWeatherNow(city);
-    city = adress.results[0].components.city;
-    locationCity.textContent = `${city}, ${adress.results[0].components.country}`;
-    center =  adress.results[0].geometry;
-    posLatitude = adress.results[0].geometry.lat.toFixed(2);
-    posLongitude = adress.results[0].geometry.lng.toFixed(2);
-    console.log(adress)
-   
-   
-    addMap(center);
-    lat = String(posLatitude).split('.');
-    lon = String(posLongitude).split('.');
-    latMinutes = lat[0];
-    latSeconds = lat[1];
-    lonMinutes = lon[0];
-    lonSeconds = lon[1];
-    latitude.textContent = 'Latitude:' + latMinutes + '°' + latSeconds + "'";
-    longitude.textContent = 'Longitude:' + lonMinutes + '°' + lonSeconds + "'"
-  }
+  return fetch(
+    `https://api.opencagedata.com/geocode/v1/json?q=${city}&key=8466357058924cb6ab7663a46faa152a&language=en&pretty=1`
+  ).then((response) => response.json());
+}
+async function showSearchCity(city) {
+  try {
+  city = inputCity.value;
+  let adress = await searchSity(city);
+  showWeatherNow(city);
+  city = adress.results[0].components.city;
+  country = adress.results[0].components.country;
+  locationCity.textContent = `${city}, ${country}`;
+  posLatitude = adress.results[0].geometry.lat.toFixed(2);
+  posLongitude = adress.results[0].geometry.lng.toFixed(2);
+  console.log(adress);
 
-  function addMap(center) {
-  mapboxgl.accessToken =
-    'pk.eyJ1IjoieWF1aGVuaWJlaWR1ayIsImEiOiJja2o3b2llMzUwcDNwMnJwNWtuOG82MzlpIn0.cNTogxbQEyS45pQYibK8mA';
-  let map = new mapboxgl.Map({
-    container: 'map', // container id
-    style: 'mapbox://styles/mapbox/streets-v11', // style URL
-    center: [posLongitude, posLatitude], // starting position [lng, lat]
-    zoom: 9, // starting zoom
-  });
-  var marker = new mapboxgl.Marker()
-  .setLngLat([posLongitude, posLatitude])
-  .addTo(map);  
+  getMap(posLatitude, posLongitude);
+  getCoordinats(posLatitude, posLongitude);
+  inputCity.value = "";
+  } catch {
+    alert(
+      "Enter city again"
+    );
   }
-
-  buttonSearch.addEventListener('click', showSearchCity);
-// function getLocation() {
-//   return fetch('https://ipinfo.io/json?token=bc42e9ca6258a9').then((response) =>
-//     response.json()
-//   );
-// };
-// async function showLocation() {
-//   let cityAndCountry = await getLocation();
-//   locationCity.textContent = `${cityAndCountry.city}, ${cityAndCountry.country}`;
-//   console.log(cityAndCountry)
-// }
-
+}
 
 
 const getWeatherNow = async (city) => {
@@ -108,41 +77,29 @@ const getWeatherNow = async (city) => {
 async function showWeatherNow(city) {
   let weather = await getWeatherNow(city);
   const data = weather.list;
-  tempNow = data[0].main.temp.toFixed()+'°';
-  tempretureNow.textContent = tempNow;
-
-
-  firstTemperature.textContent =  data[8].main.temp.toFixed()+'℃';
-  secondTemperature.textContent = data[16].main.temp.toFixed()+'℃';
-  thirdTemperature.textContent = data[24].main.temp.toFixed()+'℃';
+  tempNow = data[0].main.temp.toFixed();
+  tempretureNow.textContent = tempNow + '°';
+  firstTemperature.textContent = data[8].main.temp.toFixed() + '℃';
+  secondTemperature.textContent = data[16].main.temp.toFixed() + '℃';
+  thirdTemperature.textContent = data[24].main.temp.toFixed() + '℃';
   overcast.textContent = data[0].weather[0].description;
   feelsLike.textContent = `Feels like: ${data[0].main.feels_like.toFixed()}℃`;
   humidity.textContent = `Humidity: ${data[0].main.humidity}%`;
   speedWind.textContent = `Wind: ${data[0].wind.speed.toFixed()} m/s`;
 
-
   iconWeatherNow.style.backgroundImage = `url(http://openweathermap.org/img/wn/${data[0].weather[0].icon}@2x.png)`;
   iconOne.style.backgroundImage = `url(http://openweathermap.org/img/wn/${data[8].weather[0].icon}@2x.png)`;
   iconTwo.style.backgroundImage = `url(http://openweathermap.org/img/wn/${data[16].weather[0].icon}@2x.png)`;
   iconThree.style.backgroundImage = `url(http://openweathermap.org/img/wn/${data[24].weather[0].icon}@2x.png)`;
-  console.log(weather);  
+  console.log(weather);
 }
 
+  
 
 
-
-function transferCelsiusToFarenheit(tempNow) {
-  tempretureNow.textContent = tempNow * (9/5) + 32 + '°'
+function transferCelsiusToFarenheit() {
+  tempretureNow.textContent = Math.round(tempNow * (9 / 5) + 32) + '°';
 }
-
-
-
-
-
-
-
-
-
 
 
 
@@ -150,13 +107,13 @@ function transferCelsiusToFarenheit(tempNow) {
 
 function showDateNow() {
   const dayOfWeekEn = {
-   0: 'Sunday',
-   1: 'Monday',
-   2: 'Tuesday',
-   3: 'Wednesday',
-   4: 'Thursday',
-   5: 'Friday',
-   6: 'Saturday'
+    0: 'Sunday',
+    1: 'Monday',
+    2: 'Tuesday',
+    3: 'Wednesday',
+    4: 'Thursday',
+    5: 'Friday',
+    6: 'Saturday',
   };
   const monthsEn = {
     0: 'January',
@@ -176,11 +133,15 @@ function showDateNow() {
   let dayofWeek = now.getDay();
   let dayNumber = now.getDate();
   let month = now.getMonth();
-  dateNow.textContent = dayOfWeekEn[dayofWeek].slice(0,3)+ ' ' + dayNumber + ' ' + monthsEn[month];
-  firstDay.textContent = dayOfWeekEn[dayofWeek+1];
-  secondDay.textContent = dayOfWeekEn[dayofWeek+2];
-  thirdDay.textContent = dayOfWeekEn[dayofWeek+3];
-
+  dateNow.textContent =
+    dayOfWeekEn[dayofWeek].slice(0, 3) +
+    ' ' +
+    dayNumber +
+    ' ' +
+    monthsEn[month];
+  firstDay.textContent = dayOfWeekEn[dayofWeek + 1];
+  secondDay.textContent = dayOfWeekEn[dayofWeek + 2];
+  thirdDay.textContent = dayOfWeekEn[dayofWeek + 3];
 }
 showDateNow();
 
@@ -202,29 +163,37 @@ function createMap() {
   function showMap(position) {
     const posLatitude = position.coords.latitude.toFixed(2);
     const posLongitude = position.coords.longitude.toFixed(2);
-    lat = String(posLatitude).split('.');
-    lon = String(posLongitude).split('.');
-    latMinutes = lat[0];
-    latSeconds = lat[1];
-    lonMinutes = lon[0];
-    lonSeconds = lon[1];
-    latitude.textContent = 'Latitude:' + latMinutes + '°' + latSeconds + "'";
-    longitude.textContent = 'Longitude:' + lonMinutes + '°' + lonSeconds + "'"
-    showAdress(posLatitude,posLongitude);
-    mapboxgl.accessToken =
-      'pk.eyJ1IjoieWF1aGVuaWJlaWR1ayIsImEiOiJja2o3b2llMzUwcDNwMnJwNWtuOG82MzlpIn0.cNTogxbQEyS45pQYibK8mA';
-    let map = new mapboxgl.Map({
-      container: 'map', // container id
-      style: 'mapbox://styles/mapbox/streets-v11', // style URL
-      center: [posLongitude, posLatitude], // starting position [lng, lat]
-      zoom: 9, // starting zoom
-    });
-    var marker = new mapboxgl.Marker()
-      .setLngLat([posLongitude, posLatitude])
-      .addTo(map);  
+    getCoordinats(posLatitude, posLongitude);
+    showAdress(posLatitude, posLongitude);
+    getMap(posLatitude, posLongitude);
   }
 }
 createMap();
+
+function getCoordinats(posLatitude, posLongitude) {
+  lat = String(posLatitude).split('.');
+  lon = String(posLongitude).split('.');
+  latMinutes = lat[0];
+  latSeconds = lat[1];
+  lonMinutes = lon[0];
+  lonSeconds = lon[1];
+  latitude.textContent = 'Latitude:' + latMinutes + '°' + latSeconds + "'";
+  longitude.textContent = 'Longitude:' + lonMinutes + '°' + lonSeconds + "'";
+}
+
+function getMap(posLatitude, posLongitude) {
+  mapboxgl.accessToken =
+    'pk.eyJ1IjoieWF1aGVuaWJlaWR1ayIsImEiOiJja2o3b2llMzUwcDNwMnJwNWtuOG82MzlpIn0.cNTogxbQEyS45pQYibK8mA';
+  let map = new mapboxgl.Map({
+    container: 'map', // container id
+    style: 'mapbox://styles/mapbox/streets-v11', // style URL
+    center: [posLongitude, posLatitude], // starting position [lng, lat]
+    zoom: 9, // starting zoom
+  });
+  var marker = new mapboxgl.Marker()
+    .setLngLat([posLongitude, posLatitude])
+    .addTo(map);
+}
 
 const getLinkToImage = async () => {
   const url =
@@ -238,9 +207,18 @@ async function getBackground() {
   try {
     const backgroundLink = await getLinkToImage();
     body.style.backgroundImage = `url(${backgroundLink})`;
+    body.style.transition = '1s'
   } catch (error) {
     console.error(error);
   }
 }
 
+function addKeyBoard(e) {
+  if (e.which == 13) {
+    showSearchCity();
+  }
+}
+
+buttonSearch.addEventListener('click', showSearchCity);
+window.addEventListener('keypress',addKeyBoard);
 buttonRefresh.addEventListener('click', getBackground);

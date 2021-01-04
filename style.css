@@ -21,7 +21,7 @@ body {
 main {
   display: flex;
   flex-direction: row;
-  padding: 50px 0 0 20px;
+  padding: 40px 0 0 20px;
 }
 /* HEADER */
 
@@ -149,7 +149,6 @@ main {
 .wrapper_now {
   display: flex;
   flex-direction: row;
-  padding-top: 20px;
 }
 
 .summary_weather {
@@ -179,13 +178,14 @@ main {
 
 .tempreture_now {
   font-size: 180px;
-  width: 45%;
+  width: 55vh;
+  margin: auto 10px auto 0;
+  text-align: center;
 }
 
 .icon_weatherNow {
-  background-image: url(images/icon_weatherNow.svg);
-  width: 50%;
-  height: 30%;
+  width: 100px;
+  height: 100px;
   background-size: 100% 100%;
 }
 
@@ -194,8 +194,8 @@ main {
 .wrapper_weatherThree {
   display: flex;
   flex-direction: row;
-  padding: 40px 0px 0px 0px;
-  width: 70%;
+  padding: 10px 0px 0px 0px;
+  width: 90%;
 }
 
 .days {
@@ -215,24 +215,21 @@ main {
 }
 
 .icon_one {
-  background-image: url(images/oneday.svg);
   background-size: 100% 100%;
-  width: 20%;
-  height: 20px;
+  width: 60px;
+  height: 60px;
 }
 
 .icon_two {
-  background-image: url(images/twoday.svg);
   background-size: 100% 100%;
-  width: 20%;
-  height: 20px;
+  width: 60px;
+  height: 60px;
 }
 
 .icon_three {
-  background-image: url(images/threeday.svg);
   background-size: 100% 100%;
-  width: 20%;
-  height: 20px;
+  width: 60px;
+  height: 60px;
 }
 
 /* MAPS */
@@ -259,36 +256,49 @@ main {
   .location_city {
     font-size: 25px;
   }
-
+  .tempreture_now {
+    width: 37vh;
+    font-size: 125px;
+}
   .date_and_time {
     font-size: 15px;
   }
 
-  .tempreture_now {
-    font-size: 100px;
-  }
-
   .summary_weather {
-    font-size: 15px;
-  }
-
-  .days {
-    font-size: 20px;
+    font-size: 21px;
   }
 
   .day_ofWeek {
-    font-size: 15px;
+    font-size: 20px;
   }
 }
 
 @media screen and (min-width: 320px) and (max-width: 680px) {
   .wrapper_controls {
-    flex-direction: column;
-    padding: 5px;
+    padding: 5px 5px 20px 5px;
   }
 
-  .control {
-    padding-bottom: 10px;
+  .control_button {
+    width: 30px;
+    height: 30px;
+  }
+  .search_input {
+    height: 30px;
+    width: 55px;
+  }
+  .search_button {
+    height: 30px;
+    width: 60px;
+  }
+  .languages {
+    line-height: 30px;
+  }
+
+  .languages:hover .not_active {
+    opacity: 1;
+    left: -10px;
+    top: 30px;
+    width: 100%;
   }
 
   main {
@@ -308,12 +318,13 @@ main {
   }
 
   .date_and_time {
-    font-size: 10px;
+    font-size: 15px;
   }
 
   .wrapper_now {
     width: 100%;
   }
+
   .tempreture_now {
     width: 60%;
     font-size: 80px;
@@ -334,7 +345,7 @@ main {
     width: 80vw;
   }
   .maps {
-    padding-top: 15px;
+    padding-top: 5px;
     width: auto;
   }
 }

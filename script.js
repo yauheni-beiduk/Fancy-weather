@@ -49,18 +49,44 @@ function searchSity(city) {
   return fetch(`https://api.opencagedata.com/geocode/v1/json?q=${city}&key=8466357058924cb6ab7663a46faa152a&language=en&pretty=1`)
       .then((response) => response.json());
   }
-  async function showSearchCity(city, posLongitude, posLatitude) {
+  async function showSearchCity(city) {
     city = inputCity.value;
     let adress = await searchSity(city);
     showWeatherNow(city);
     city = adress.results[0].components.city;
     locationCity.textContent = `${city}, ${adress.results[0].components.country}`;
-    posLatitude = adress.results[0].geometry[0];
-    posLongitude = adress.results[0].geometry[1];
+    center =  adress.results[0].geometry;
+    posLatitude = adress.results[0].geometry.lat.toFixed(2);
+    posLongitude = adress.results[0].geometry.lng.toFixed(2);
     console.log(adress)
+   
+   
+    addMap(center);
+    lat = String(posLatitude).split('.');
+    lon = String(posLongitude).split('.');
+    latMinutes = lat[0];
+    latSeconds = lat[1];
+    lonMinutes = lon[0];
+    lonSeconds = lon[1];
+    latitude.textContent = 'Latitude:' + latMinutes + '°' + latSeconds + "'";
+    longitude.textContent = 'Longitude:' + lonMinutes + '°' + lonSeconds + "'"
   }
 
+  function addMap(center) {
+  mapboxgl.accessToken =
+    'pk.eyJ1IjoieWF1aGVuaWJlaWR1ayIsImEiOiJja2o3b2llMzUwcDNwMnJwNWtuOG82MzlpIn0.cNTogxbQEyS45pQYibK8mA';
+  let map = new mapboxgl.Map({
+    container: 'map', // container id
+    style: 'mapbox://styles/mapbox/streets-v11', // style URL
+    center: [posLongitude, posLatitude], // starting position [lng, lat]
+    zoom: 9, // starting zoom
+  });
+  var marker = new mapboxgl.Marker()
+  .setLngLat([posLongitude, posLatitude])
+  .addTo(map);  
+  }
 
+  buttonSearch.addEventListener('click', showSearchCity);
 // function getLocation() {
 //   return fetch('https://ipinfo.io/json?token=bc42e9ca6258a9').then((response) =>
 //     response.json()
@@ -198,7 +224,6 @@ function createMap() {
       .addTo(map);  
   }
 }
-
 createMap();
 
 const getLinkToImage = async () => {

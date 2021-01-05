@@ -22,8 +22,6 @@ const monthsEn = {
   11: 'December',
 };
 
-
-
 const buttonRefresh = document.getElementById('control_button');
 const buttonFarenheit = document.getElementById('farenheit');
 const buttonCelsius = document.getElementById('celsius');
@@ -64,7 +62,7 @@ function getAdress(posLatitude, posLongitude) {
 }
 async function showAdress(posLatitude, posLongitude) {
   adress = await getAdress(posLatitude, posLongitude);
-//  locations = adress.results[0].components;
+  locations = adress.results[0].components;
   city = adress.results[0].components.city;
   const country = adress.results[0].components.country;
   locationCity.textContent = `${city}, ${country}`;
@@ -81,31 +79,27 @@ async function showSearchCity(city) {
   try {
     city = inputCity.value;
     let adress = await searchSity(city);
-     city = inputCity.value;
-    let  result = adress.results[0];
-    city =  result.components.city ?  result.components.city :  result.components.town
-      ?  result.components.town
-      :  result.components.village;
-    country =  result.components.country;
+    city = inputCity.value;
+    let result = adress.results[0];
+    city = result.components.city
+      ? result.components.city
+      : result.components.town
+      ? result.components.town
+      : result.components.village;
+    country = result.components.country;
     locationCity.textContent = `${city}, ${country}`;
-    posLatitude =  result.geometry.lat.toFixed(2);
-    posLongitude =  result.geometry.lng.toFixed(2);
+    posLatitude = result.geometry.lat.toFixed(2);
+    posLongitude = result.geometry.lng.toFixed(2);
     console.log(adress);
-
-
     // QESTIONS?????????????
-   // inputCity.value = '';
-
-
+    // inputCity.value = '';
     getMap(posLatitude, posLongitude);
     getCoordinats(posLatitude, posLongitude);
     showWeatherNow(city);
-  } catch {
-    alert('Enter city again');
+  } catch (error) {
+    alert(error);
   }
 }
-
-
 
 const getWeatherNow = async (city) => {
   return fetch(
@@ -113,15 +107,26 @@ const getWeatherNow = async (city) => {
   ).then((response) => response.json());
 };
 async function showWeatherNow(city) {
+  try {
   weather = await getWeatherNow(city);
   const data = weather.list;
   tempNow = Math.round(data[0].main.temp);
-  tempretureNow.textContent = isFarengeit ? tempNow + '°' : Math.round((tempNow * (9 / 5) + 32)) + '°';
-  firstTemperature.textContent = isFarengeit ? Math.round(data[8].main.temp) + '°' : Math.round(data[8].main.temp * (9 / 5) + 32)+ '°';
-  secondTemperature.textContent =  isFarengeit ? Math.round(data[16].main.temp) + '°' : Math.round(data[16].main.temp * (9 / 5) + 32)+ '°';
-  thirdTemperature.textContent =  isFarengeit ? Math.round(data[24].main.temp) + '°' : Math.round(data[24].main.temp * (9 / 5) + 32)+ '°';
+  tempretureNow.textContent = isFarengeit
+    ? tempNow + '°'
+    : Math.round(tempNow * (9 / 5) + 32) + '°';
+  firstTemperature.textContent = isFarengeit
+    ? Math.round(data[8].main.temp) + '°'
+    : Math.round(data[8].main.temp * (9 / 5) + 32) + '°';
+  secondTemperature.textContent = isFarengeit
+    ? Math.round(data[16].main.temp) + '°'
+    : Math.round(data[16].main.temp * (9 / 5) + 32) + '°';
+  thirdTemperature.textContent = isFarengeit
+    ? Math.round(data[24].main.temp) + '°'
+    : Math.round(data[24].main.temp * (9 / 5) + 32) + '°';
   overcast.textContent = data[0].weather[0].description;
-  feelsLike.textContent = isFarengeit ? `Feels like: ${Math.round(data[0].main.feels_like)+ '°'}`: `Feels like: ${Math.round((data[0].main.feels_like) * (9 / 5) + 32)+ '°'}`;
+  feelsLike.textContent = isFarengeit
+    ? `Feels like: ${Math.round(data[0].main.feels_like) + '°'}`
+    : `Feels like: ${Math.round(data[0].main.feels_like * (9 / 5) + 32) + '°'}`;
   humidity.textContent = `Humidity: ${data[0].main.humidity}%`;
   speedWind.textContent = `Wind: ${data[0].wind.speed.toFixed()} m/s`;
 
@@ -131,15 +136,19 @@ async function showWeatherNow(city) {
   iconThree.style.backgroundImage = `url(http://openweathermap.org/img/wn/${data[24].weather[0].icon}@2x.png)`;
   console.log(weather);
   showTime();
-  
+  }
+  catch (error) {
+    alert(error);
+  }
 }
 
 function showTime() {
   let now = new Date();
   let currentTimeZoneOffsetInHours = now.getTimezoneOffset() * 60000;
-  let localTime = now.getTime() + currentTimeZoneOffsetInHours + weather.city.timezone*1000; 
+  let localTime =
+    now.getTime() + currentTimeZoneOffsetInHours + weather.city.timezone * 1000;
   let today = new Date(localTime);
-  let  hour = today.getHours();
+  let hour = today.getHours();
   let min = today.getMinutes();
   let sec = today.getSeconds();
   timeNow.textContent = `${addZero(hour)}:${addZero(min)}:${addZero(sec)}`;
@@ -205,7 +214,6 @@ const getLinkToImage = async () => {
   const data = await response.json();
   return data.urls.regular;
 };
-
 async function getBackground() {
   try {
     const backgroundLink = await getLinkToImage();
@@ -222,42 +230,38 @@ function addKeyBoard(e) {
   }
 }
 
+//  LOCAL STORAGE TEMPERATURE
 
 function getTempLocalStorage() {
-   
-  if (localStorage.getItem('isFarengeit')) {
-    localStorage.setItem('isFarengeit', true);
+  if (localStorage.getItem('isFarengeit') == 'true') {
     buttonCelsius.classList.add('active');
   } else {
-  localStorage.getItem('isFarengeit', false);
- isFarengeit = false;
+    isFarengeit = false;
     buttonFarenheit.classList.add('active');
   }
 }
-getTempLocalStorage();
-
 function transferCelsiusToFarenheit() {
   city = inputCity.value || adress.results[0].components.city;
   isFarengeit = false;
-  showWeatherNow(city);
   buttonCelsius.classList.remove('active');
   buttonFarenheit.classList.add('active');
-  localStorage.setItem('isFarengeit',false);
+  localStorage.setItem('isFarengeit', 'false');
+  showWeatherNow(city);
+  getTempLocalStorage();
 }
 function transferFarenheitToCelsius() {
-  city = inputCity.value ||  adress.results[0].components.city;
+  city = inputCity.value || adress.results[0].components.city;
   isFarengeit = true;
-  showWeatherNow(city); 
   buttonFarenheit.classList.remove('active');
   buttonCelsius.classList.add('active');
-  localStorage.setItem('isFarengeit',true);
+  localStorage.setItem('isFarengeit', 'true');
+  showWeatherNow(city);
+  getTempLocalStorage();
 }
-
-
+getTempLocalStorage();
 
 buttonSearch.addEventListener('click', showSearchCity);
 window.addEventListener('keypress', addKeyBoard);
 buttonRefresh.addEventListener('click', getBackground);
 buttonCelsius.addEventListener('click', transferFarenheitToCelsius);
 buttonFarenheit.addEventListener('click', transferCelsiusToFarenheit);
-

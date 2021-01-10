@@ -42,6 +42,7 @@ export const info = {
     summary : {
         feels: 'Feels like: ',
         wind: 'Wind: ',
+        speed: 'm/s',
         humidity: 'Humidity: '
     },
 };

@@ -1,4 +1,4 @@
-export const info = {
+export const LanguageEN = {
     dayOfWeekAbbreviated : {
         0: 'Sun',
         1: 'Mon',

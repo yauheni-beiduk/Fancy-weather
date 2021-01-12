@@ -1,4 +1,4 @@
-  export const info = {
+  export const LanguageRU = {
     dayOfWeekAbbreviated : {
         0: 'Вс',
         1: 'Пн',

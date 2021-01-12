@@ -211,14 +211,19 @@ function showTime() {
   if (dayofWeek > 6) {
     dayofWeek = 0;
     firstDay.textContent = `${info.dayOfWeek[dayofWeek]}`;
-    secondDay.textContent = `${info.dayOfWeek[dayofWeek]}`;
-    thirdDay.textContent = `${info.dayOfWeek[dayofWeek]}`;
   }
-
   firstDay.textContent = `${info.dayOfWeek[dayofWeek]}`;
   dayofWeek++;
+  if (dayofWeek > 6) {
+    dayofWeek = 0;
+  secondDay.textContent = `${info.dayOfWeek[dayofWeek]}`;
+  }
   secondDay.textContent = `${info.dayOfWeek[dayofWeek]}`;
   dayofWeek++;
+  if (dayofWeek > 6) {
+    dayofWeek = 0;
+    thirdDay.textContent = `${info.dayOfWeek[dayofWeek]}`;
+  }
   thirdDay.textContent = `${info.dayOfWeek[dayofWeek]}`;
 
   setTimeout(showTime, 1000);
@@ -234,7 +239,7 @@ function createMap() {
   function showMap(position) {
     posLatitude = position.coords.latitude.toFixed(2);
     posLongitude = position.coords.longitude.toFixed(2);
-    
+
     getCoordinats(posLatitude, posLongitude);
     showAdress(posLatitude, posLongitude);
     getMap(posLatitude, posLongitude);

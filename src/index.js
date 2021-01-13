@@ -1,7 +1,7 @@
 
 import {LanguageEN} from './languageEn.js'; 
 import {LanguageRU} from './languageRu.js';
-
+import "./style.css";
 
 window.onload = function () {
 let posLatitude;

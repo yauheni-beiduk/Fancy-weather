@@ -37,10 +37,45 @@ window.addEventListener("load", function () {
   let weather;
   let adress;
   let city = localStorage.getItem("city");
-  let isFarengeit = true;
   const isRu = localLang && localLang === "ru";
   let lang = isRu ? "ru" : "en";
   let info = isRu ? LanguageRU : LanguageEN;
+
+
+  const localTemp = localStorage.getItem("isFarengeit");
+  let isFarengeit = localTemp == 'true';
+  
+  
+
+  (function initializeTempButton() {
+    console.log(localTemp)
+    if (isFarengeit) {
+      console.log(localTemp)
+      console.log(isFarengeit)
+      buttonFarenheit.classList.add("active");
+      buttonCelsius.classList.remove("active");
+    }
+  })();
+  
+  function transferCelsiusToFarenheit() {
+    isFarengeit = true;
+    buttonCelsius.classList.remove("active");
+    buttonFarenheit.classList.add("active");
+    localStorage.setItem("isFarengeit", isFarengeit);
+    console.log(isFarengeit)
+    showAdress(posLatitude, posLongitude);
+    showWeatherNow(city);
+  }
+  function transferFarenheitToCelsius() {
+    isFarengeit = false;
+    buttonFarenheit.classList.remove("active");
+    buttonCelsius.classList.add("active");
+    localStorage.setItem("isFarengeit", isFarengeit);
+    console.log(isFarengeit)
+    showAdress(posLatitude, posLongitude);
+    showWeatherNow(city);
+  }
+
 
   function activeButton(buttonRussianLanguage, buttonEnglishlanguage) {
     buttonRussianLanguage.classList.add("active");
@@ -154,8 +189,8 @@ window.addEventListener("load", function () {
       const thirdTemporary = data[24].main.temp;
 
       tempretureNow.textContent = isFarengeit
-        ? `${temporaryNow}°`
-        : `${Math.round(temporaryNow * (9 / 5) + 32)}°`;
+        ? `${Math.round(temporaryNow * (9 / 5) + 32)}°`
+        : `${temporaryNow}°`;
       firstTemperature.textContent = isFarengeit
         ? `${Math.round(firstTemporary)}°`
         : `${Math.round(firstTemporary * (9 / 5) + 32)}°`;
@@ -306,42 +341,25 @@ window.addEventListener("load", function () {
     }
   }
 
-  //  LOCAL STORAGE TEMPERATURE
-
-  function getTemporaryLocalStorage() {
-    if (localStorage.getItem("isFarengeit") === "true") {
-      buttonCelsius.classList.add("active");
-      buttonFarenheit.classList.remove("active");
-    } else {
-      isFarengeit = false;
-      buttonFarenheit.classList.add("active");
-      buttonCelsius.classList.remove("active");
-    }
-  }
-  function transferCelsiusToFarenheit() {
-    isFarengeit = false;
-    buttonCelsius.classList.remove("active");
-    buttonFarenheit.classList.add("active");
-
-    localStorage.setItem("isFarengeit", "false");
-
-    showAdress(posLatitude, posLongitude);
-    showWeatherNow(city);
-    getTemporaryLocalStorage();
-  }
-  function transferFarenheitToCelsius() {
-    isFarengeit = true;
-    buttonFarenheit.classList.remove("active");
-    buttonCelsius.classList.add("active");
-
-    localStorage.setItem("isFarengeit", "true");
-
-    showAdress(posLatitude, posLongitude);
-    showWeatherNow(city);
-    getTemporaryLocalStorage();
-  }
-
-  getTemporaryLocalStorage();
+//  LOCAL STORAGE TEMPERATURE
+//   const localTemp = localStorage.getItem("isFarengeit");
+//  let isTemp = localTemp ? 
+//   function transferCelsiusToFarenheit() {
+//     isFarengeit = false;
+//     buttonCelsius.classList.remove("active");
+//     buttonFarenheit.classList.add("active");
+//     localStorage.setItem("isFarengeit", "false");
+//     showAdress(posLatitude, posLongitude);
+//     showWeatherNow(city);
+//   }
+//   function transferFarenheitToCelsius() {
+//     isFarengeit = true;
+//     buttonFarenheit.classList.remove("active");
+//     buttonCelsius.classList.add("active");
+//     localStorage.setItem("isFarengeit", "true");
+//     showAdress(posLatitude, posLongitude);
+//     showWeatherNow(city);
+//   }
 
   buttonSearch.addEventListener("click", showSearchCity);
   window.addEventListener("keypress", addKeyBoard);

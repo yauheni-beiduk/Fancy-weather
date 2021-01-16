@@ -1,88 +1,75 @@
-import {LanguageEN} from './languageEn.js';
-import {LanguageRU} from './languageRu.js';
-import './style.css';
+import { LanguageEN } from "./language-en.js";
+import { LanguageRU } from "./language-ru.js";
+import "./style.css";
 
-window.onload = function () {
+window.addEventListener("load", function () {
   let posLatitude;
   let posLongitude;
-  const buttonRefresh = document.getElementById('control_button');
-  const buttonFarenheit = document.getElementById('farenheit');
-  const buttonCelsius = document.getElementById('celsius');
-  const inputCity = document.querySelector('.search_input');
-  const buttonSearch = document.getElementById('search_button');
-  const locationCity = document.getElementById('location_city');
-  const dateNow = document.querySelector('.date_now');
-  const timeNow = document.querySelector('.time_now');
-  const tempretureNow = document.querySelector('.tempreture_now');
-  const latitude = document.querySelector('.latitude');
-  const longitude = document.querySelector('.longitude');
-  const body = document.getElementById('body');
-  const overcast = document.getElementById('overcast');
-  const feelsLike = document.getElementById('feelsLike');
-  const speedWind = document.getElementById('speedWind');
-  const humidity = document.getElementById('humidity');
-  const iconWeatherNow = document.querySelector('.icon_weatherNow');
-  const iconOne = document.querySelector('.icon_one');
-  const iconTwo = document.querySelector('.icon_two');
-  const iconThree = document.querySelector('.icon_three');
-  const firstDay = document.getElementById('firstDay');
-  const secondDay = document.getElementById('secondDay');
-  const thirdDay = document.getElementById('thirdDay');
-  const firstTemperature = document.getElementById('firstTemperature');
-  const secondTemperature = document.getElementById('secondTemperature');
-  const thirdTemperature = document.getElementById('thirdTemperature');
-  const buttonRussianLanguage = document.getElementById('language_ru');
-  const buttonEnglishlanguage = document.getElementById('language_en');
-  const localLang = localStorage.getItem('lang');
-  console.log(localLang)
+  const buttonRefresh = document.querySelector("#control_button");
+  const buttonFarenheit = document.querySelector("#farenheit");
+  const buttonCelsius = document.querySelector("#celsius");
+  const inputCity = document.querySelector(".search_input");
+  const buttonSearch = document.querySelector("#search_button");
+  const locationCity = document.querySelector("#location_city");
+  const dateNow = document.querySelector(".date_now");
+  const timeNow = document.querySelector(".time_now");
+  const tempretureNow = document.querySelector(".tempreture_now");
+  const latitude = document.querySelector(".latitude");
+  const longitude = document.querySelector(".longitude");
+  const body = document.querySelector("#body");
+  const overcast = document.querySelector("#overcast");
+  const feelsLike = document.querySelector("#feelsLike");
+  const speedWind = document.querySelector("#speedWind");
+  const humidity = document.querySelector("#humidity");
+  const iconWeatherNow = document.querySelector(".icon_weatherNow");
+  const iconOne = document.querySelector(".icon_one");
+  const iconTwo = document.querySelector(".icon_two");
+  const iconThree = document.querySelector(".icon_three");
+  const firstDay = document.querySelector("#firstDay");
+  const secondDay = document.querySelector("#secondDay");
+  const thirdDay = document.querySelector("#thirdDay");
+  const firstTemperature = document.querySelector("#firstTemperature");
+  const secondTemperature = document.querySelector("#secondTemperature");
+  const thirdTemperature = document.querySelector("#thirdTemperature");
+  const buttonRussianLanguage = document.querySelector("#language_ru");
+  const buttonEnglishlanguage = document.querySelector("#language_en");
+  const localLang = localStorage.getItem("lang");
   let weather;
   let adress;
-  let city = localStorage.getItem('city');
+  let city = localStorage.getItem("city");
   let isFarengeit = true;
-  let isRu = localLang && localLang == 'ru'
-  let lang = isRu
-    ? 'ru'
-    : 'en';
-  let info = isRu
-      ? LanguageRU
-      : LanguageEN;
+  const isRu = localLang && localLang === "ru";
+  let lang = isRu ? "ru" : "en";
+  let info = isRu ? LanguageRU : LanguageEN;
+
+  function activeButton(buttonRussianLanguage, buttonEnglishlanguage) {
+    buttonRussianLanguage.classList.add("active");
+    buttonRussianLanguage.classList.remove("not_active");
+    buttonEnglishlanguage.classList.remove("active");
+    buttonEnglishlanguage.classList.add("not_active");
+  }
 
   (function initializeLangButton() {
     if (isRu) {
-      buttonRussianLanguage.classList.add('active');
-      buttonRussianLanguage.classList.remove('not_active');
-      buttonEnglishlanguage.classList.remove('active');
-      buttonEnglishlanguage.classList.add('not_active');
+      activeButton(buttonRussianLanguage, buttonEnglishlanguage);
     }
   })();
 
   function langRu() {
-    lang = 'ru';
+    lang = "ru";
     info = LanguageRU;
-    console.log(info)
-    buttonRussianLanguage.classList.add('active');
-    buttonRussianLanguage.classList.remove('not_active');
-    buttonEnglishlanguage.classList.remove('active');
-    buttonEnglishlanguage.classList.add('not_active');
-
-    localStorage.setItem('lang', 'ru');
-
+    activeButton(buttonRussianLanguage, buttonEnglishlanguage);
+    localStorage.setItem("lang", "ru");
     showAdress(posLatitude, posLongitude);
     showWeatherNow(city);
     getCoordinats(posLatitude, posLongitude);
   }
 
   function langEn() {
-    lang = 'en';
+    lang = "en";
     info = LanguageEN;
-
-    buttonRussianLanguage.classList.remove('active');
-    buttonRussianLanguage.classList.add('not_active');
-    buttonEnglishlanguage.classList.remove('not_active');
-    buttonEnglishlanguage.classList.add('active');
-
-    localStorage.setItem('lang', 'en');
-
+    activeButton(buttonEnglishlanguage, buttonRussianLanguage);
+    localStorage.setItem("lang", "en");
     showAdress(posLatitude, posLongitude);
     showWeatherNow(city);
     getCoordinats(posLatitude, posLongitude);
@@ -98,12 +85,11 @@ window.onload = function () {
     try {
       adress = await getAdress(posLatitude, posLongitude);
 
-      let locations = adress.results[0].components;
+      const locations = adress.results[0].components;
       city = locations.city;
-      const country = locations.country;
+      const { country } = locations;
 
       locationCity.textContent = `${city}, ${country}`;
-      console.log(adress);
       showWeatherNow(city);
     } catch (error) {
       alert(error);
@@ -111,7 +97,6 @@ window.onload = function () {
   }
 
   function searchSity(city) {
-    console.log(city);
     return fetch(
       `https://api.opencagedata.com/geocode/v1/json?q=${city}&key=8466357058924cb6ab7663a46faa152a&language=${lang}&pretty=1`
     ).then((response) => response.json());
@@ -120,75 +105,72 @@ window.onload = function () {
   async function showSearchCity(city) {
     try {
       if (!city) {
-        city = inputCity.value
-      } 
+        city = inputCity.value;
+      }
       adress = await searchSity(city);
-      
-      console.log(adress)
+
       if (adress) {
-      let result = adress.results[0].components;
-      city = result.city
-        ? result.city
-        : result.town
-        ? result.town
-        : result.village;
+        const result = adress.results[0].components;
+        city = result.city
+          ? result.city
+          : result.town
+          ? result.town
+          : result.village;
 
-      let country = result.country;
-      locationCity.textContent = `${city}, ${country}`;
+        const { country } = result;
+        locationCity.textContent = `${city}, ${country}`;
 
-      let pos = adress.results[0].geometry;
+        const pos = adress.results[0].geometry;
 
-      posLatitude = pos.lat.toFixed(2);
-      posLongitude = pos.lng.toFixed(2);
+        posLatitude = pos.lat.toFixed(2);
+        posLongitude = pos.lng.toFixed(2);
 
-      localStorage.setItem('city',city);
-      inputCity.value = '';
+        localStorage.setItem("city", city);
+        inputCity.value = "";
 
-      showWeatherNow(city);
-      getMap(posLatitude, posLongitude);
-      getCoordinats(posLatitude, posLongitude);
+        showWeatherNow(city);
+        getMap(posLatitude, posLongitude);
+        getCoordinats(posLatitude, posLongitude);
       }
     } catch (error) {
       alert(error);
     }
   }
 
-  const getWeatherNow = async (city) => {
-    
-    return fetch(
+  const getWeatherNow = async (city) =>
+    fetch(
       `https://api.openweathermap.org/data/2.5/forecast?q=${city}&lang=${lang}&units=metric&appid=acb152250020945076707f815f4ffbb1`
     ).then((response) => response.json());
-  };
 
   async function showWeatherNow(city) {
     try {
       weather = await getWeatherNow(city);
 
       const data = weather.list;
-      let feelLike = data[0].main.feels_like;
-      let tempNow = Math.round(data[0].main.temp);
-      let firstTemp = data[8].main.temp;
-      let secTemp = data[16].main.temp;
-      let thirdTemp = data[24].main.temp;
+      const feelLike = data[0].main.feels_like;
+      const temporaryNow = Math.round(data[0].main.temp);
+      const firstTemporary = data[8].main.temp;
+      const secTemporary = data[16].main.temp;
+      const thirdTemporary = data[24].main.temp;
 
       tempretureNow.textContent = isFarengeit
-        ? tempNow + '°'
-        : Math.round(tempNow * (9 / 5) + 32) + '°';
+        ? `${temporaryNow}°`
+        : `${Math.round(temporaryNow * (9 / 5) + 32)}°`;
       firstTemperature.textContent = isFarengeit
-        ? Math.round(firstTemp) + '°'
-        : Math.round(firstTemp * (9 / 5) + 32) + '°';
+        ? `${Math.round(firstTemporary)}°`
+        : `${Math.round(firstTemporary * (9 / 5) + 32)}°`;
       secondTemperature.textContent = isFarengeit
-        ? Math.round(secTemp) + '°'
-        : Math.round(secTemp * (9 / 5) + 32) + '°';
+        ? `${Math.round(secTemporary)}°`
+        : `${Math.round(secTemporary * (9 / 5) + 32)}°`;
       thirdTemperature.textContent = isFarengeit
-        ? Math.round(thirdTemp) + '°'
-        : Math.round(thirdTemp * (9 / 5) + 32) + '°';
+        ? `${Math.round(thirdTemporary)}°`
+        : `${Math.round(thirdTemporary * (9 / 5) + 32)}°`;
 
       overcast.textContent = data[0].weather[0].description;
 
       feelsLike.textContent = isFarengeit
-        ? `${info.summary.feels} ${Math.round(feelLike) + '°'}`
-        : `${info.summary.feels} ${Math.round(feelLike * (9 / 5) + 32) + '°'}`;
+        ? `${info.summary.feels} ${`${Math.round(feelLike)}°`}`
+        : `${info.summary.feels} ${`${Math.round(feelLike * (9 / 5) + 32)}°`}`;
 
       humidity.textContent = `${info.summary.humidity} ${data[0].main.humidity}%`;
       speedWind.textContent = `${
@@ -200,7 +182,6 @@ window.onload = function () {
       iconTwo.style.backgroundImage = `url(http://openweathermap.org/img/wn/${data[16].weather[0].icon}@2x.png)`;
       iconThree.style.backgroundImage = `url(http://openweathermap.org/img/wn/${data[24].weather[0].icon}@2x.png)`;
 
-      console.log(weather);
       showTime();
     } catch (error) {
       alert(error);
@@ -208,20 +189,20 @@ window.onload = function () {
   }
 
   function showTime() {
-    let now = new Date();
-    let currentTimeZoneOffsetInHours = now.getTimezoneOffset() * 60000;
-    let localTime =
+    const now = new Date();
+    const currentTimeZoneOffsetInHours = now.getTimezoneOffset() * 60000;
+    const localTime =
       now.getTime() +
       currentTimeZoneOffsetInHours +
       weather.city.timezone * 1000;
-    let today = new Date(localTime);
-    let hour = today.getHours();
-    let min = today.getMinutes();
-    let sec = today.getSeconds();
+    const today = new Date(localTime);
+    const hour = today.getHours();
+    const min = today.getMinutes();
+    const sec = today.getSeconds();
     timeNow.textContent = `${addZero(hour)}:${addZero(min)}:${addZero(sec)}`;
     let dayofWeek = today.getDay();
-    let dayNumber = today.getDate();
-    let month = today.getMonth();
+    const dayNumber = today.getDate();
+    const month = today.getMonth();
 
     dateNow.textContent = `${info.dayOfWeekAbbreviated[dayofWeek]} ${dayNumber} ${info.months[month]}`;
     dayofWeek++;
@@ -248,7 +229,7 @@ window.onload = function () {
   }
 
   function addZero(n) {
-    return (parseInt(n, 10) < 10 ? '0' : '') + n;
+    return (Number.parseInt(n, 10) < 10 ? "0" : "") + n;
   }
 
   function createMap() {
@@ -264,23 +245,22 @@ window.onload = function () {
     }
   }
 
-  //createMap();
+  // createMap();
 
   (function initializeCity() {
     if (city) {
-      console.log(city)
-      showSearchCity(city)
+      showSearchCity(city);
     } else {
-      createMap()
+      createMap();
     }
-  })(); 
+  })();
   function getCoordinats(posLatitude, posLongitude) {
-    let lat = String(posLatitude).split('.');
-    let lon = String(posLongitude).split('.');
-    let latMinutes = lat[0];
-    let latSeconds = lat[1];
-    let lonMinutes = lon[0];
-    let lonSeconds = lon[1];
+    const lat = String(posLatitude).split(".");
+    const lon = String(posLongitude).split(".");
+    const latMinutes = lat[0];
+    const latSeconds = lat[1];
+    const lonMinutes = lon[0];
+    const lonSeconds = lon[1];
 
     latitude.textContent = `${info.positions.latit} ${latMinutes}°  ${latSeconds}'`;
     longitude.textContent = `${info.positions.longit} ${lonMinutes}°  ${lonSeconds}'`;
@@ -290,21 +270,21 @@ window.onload = function () {
 
   function getMap(posLatitude, posLongitude) {
     mapboxgl.accessToken =
-      'pk.eyJ1IjoieWF1aGVuaWJlaWR1ayIsImEiOiJja2o3b2llMzUwcDNwMnJwNWtuOG82MzlpIn0.cNTogxbQEyS45pQYibK8mA';
-    let map = new mapboxgl.Map({
-      container: 'map',
-      style: 'mapbox://styles/mapbox/streets-v11',
+      "pk.eyJ1IjoieWF1aGVuaWJlaWR1ayIsImEiOiJja2o3b2llMzUwcDNwMnJwNWtuOG82MzlpIn0.cNTogxbQEyS45pQYibK8mA";
+    const map = new mapboxgl.Map({
+      container: "map",
+      style: "mapbox://styles/mapbox/streets-v11",
       center: [posLongitude, posLatitude],
       zoom: 9,
     });
-    var marker = new mapboxgl.Marker()
+    const marker = new mapboxgl.Marker()
       .setLngLat([posLongitude, posLatitude])
       .addTo(map);
   }
 
   const getLinkToImage = async () => {
     const url =
-      'https://api.unsplash.com/photos/random?&client_id=e2077ad31a806c894c460aec8f81bc2af4d09c4f8104ae3177bb809faf0eac17';
+      "https://api.unsplash.com/photos/random?&client_id=e2077ad31a806c894c460aec8f81bc2af4d09c4f8104ae3177bb809faf0eac17";
     const response = await fetch(url);
     const data = await response.json();
     return data.urls.regular;
@@ -314,58 +294,60 @@ window.onload = function () {
     try {
       const backgroundLink = await getLinkToImage();
       body.style.backgroundImage = `url(${backgroundLink})`;
-      body.style.transition = '1s';
+      body.style.transition = "1s";
     } catch (error) {
-      console.error(error);
+      alert(error);
     }
   }
 
   function addKeyBoard(e) {
-    if (e.which == 13) {
+    if (e.which === 13) {
       showSearchCity();
     }
   }
 
   //  LOCAL STORAGE TEMPERATURE
 
-  function getTempLocalStorage() {
-    if (localStorage.getItem('isFarengeit') == 'true') {
-      buttonCelsius.classList.add('active');
+  function getTemporaryLocalStorage() {
+    if (localStorage.getItem("isFarengeit") === "true") {
+      buttonCelsius.classList.add("active");
+      buttonFarenheit.classList.remove("active");
     } else {
       isFarengeit = false;
-      buttonFarenheit.classList.add('active');
+      buttonFarenheit.classList.add("active");
+      buttonCelsius.classList.remove("active");
     }
   }
   function transferCelsiusToFarenheit() {
     isFarengeit = false;
-    buttonCelsius.classList.remove('active');
-    buttonFarenheit.classList.add('active');
+    buttonCelsius.classList.remove("active");
+    buttonFarenheit.classList.add("active");
 
-    localStorage.setItem('isFarengeit', 'false');
+    localStorage.setItem("isFarengeit", "false");
 
     showAdress(posLatitude, posLongitude);
     showWeatherNow(city);
-    getTempLocalStorage();
+    getTemporaryLocalStorage();
   }
   function transferFarenheitToCelsius() {
     isFarengeit = true;
-    buttonFarenheit.classList.remove('active');
-    buttonCelsius.classList.add('active');
+    buttonFarenheit.classList.remove("active");
+    buttonCelsius.classList.add("active");
 
-    localStorage.setItem('isFarengeit', 'true');
+    localStorage.setItem("isFarengeit", "true");
 
     showAdress(posLatitude, posLongitude);
     showWeatherNow(city);
-    getTempLocalStorage();
+    getTemporaryLocalStorage();
   }
 
-  getTempLocalStorage();
+  getTemporaryLocalStorage();
 
-  buttonSearch.addEventListener('click', showSearchCity);
-  window.addEventListener('keypress', addKeyBoard);
-  buttonRefresh.addEventListener('click', getBackground);
-  buttonCelsius.addEventListener('click', transferFarenheitToCelsius);
-  buttonFarenheit.addEventListener('click', transferCelsiusToFarenheit);
-  buttonEnglishlanguage.addEventListener('click', langEn);
-  buttonRussianLanguage.addEventListener('click', langRu);
-};
+  buttonSearch.addEventListener("click", showSearchCity);
+  window.addEventListener("keypress", addKeyBoard);
+  buttonRefresh.addEventListener("click", getBackground);
+  buttonCelsius.addEventListener("click", transferFarenheitToCelsius);
+  buttonFarenheit.addEventListener("click", transferCelsiusToFarenheit);
+  buttonEnglishlanguage.addEventListener("click", langEn);
+  buttonRussianLanguage.addEventListener("click", langRu);
+});
